@@ -1,16 +1,16 @@
 #pragma once
-#include <QString>
 
-struct Metadata {
-    QString title;
-    QString artist;
-    QString album;
-    QString genre;
-    int year = 0;
-    QString coverArtPath;
-};
+#include "metadata.h"
+#include <QObject>
 
-class MetadataReader {
+class MetadataReader : public QObject
+{
+    Q_OBJECT
 public:
-    static Metadata readMetadata(const QString &filePath);
+    explicit MetadataReader(QObject *parent = nullptr);
+    Metadata readMetadata(const QString &filePath);
+    
+signals:
+    void metadataRead(const Metadata &metadata);
+    void errorOccurred(const QString &error);
 };

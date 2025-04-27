@@ -8,3 +8,9 @@ struct Track {
     QString filePath;
     int duration = 0; // in ms
 };
+
+Q_PROPERTY(QString durationFormatted READ getDurationFormatted NOTIFY changed)
+Q_PROPERTY(QString playCount READ getPlayCount NOTIFY changed)
+
+signals:
+    void changed();
