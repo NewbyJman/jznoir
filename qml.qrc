@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/">
+        <file>qml/Main.qml</file>
+        <file>qml/logo.png</file>
+        <!-- Add more QML or image files here as you expand -->
+    </qresource>
+</RCC>
