@@ -4,6 +4,7 @@ import Qt.labs.platform 1.1 as Platform
 import JZNoir 1.0
 
 ScrollView {
+    id: settingsScroll
     id: root
     contentWidth: parent.width
     clip: true

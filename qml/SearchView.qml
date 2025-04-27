@@ -3,8 +3,16 @@ import QtQuick.Controls 2.15
 
 Rectangle {
     color: "#2c2c2c"
+    Keys.onPressed: handleNavigation(event)
+
+    function handleNavigation(event) {
+        if (NavigationManager.handleListNavigation(event, searchList)) {
+            event.accepted = true;
+        }
+    }
 
     ListView {
+        id: searchList
         anchors.fill: parent
         model: SearchModel {}
         delegate: ItemDelegate {

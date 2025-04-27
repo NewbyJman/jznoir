@@ -1,33 +1,45 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
-#include <QIcon>
-#include <QtQuickControls2>
+#include <QQmlContext>
+#include <QtQuickControls2/QQuickStyle>
+#include "../include/AudioEngine.h"
+#include "../include/LibraryScanner.h"
+#include "../include/MetadataReader.h"
+#include "../include/TracksModel.h"
+#include "../include/QueueManager.h"
+#include "../include/HistoryManager.h"
 
 int main(int argc, char *argv[])
 {
-    QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-
     QGuiApplication app(argc, argv);
-
-    // Set a nice default style (optional, but looks better)
+    
     QtQuickControls2::QQuickStyle::setStyle("Material");
-
-    // Set application details
-    app.setOrganizationName("JZApps");
     app.setApplicationName("JZNoir");
 
-    QQmlApplicationEngine engine;
+    // Register backend components
+    qmlRegisterType<TracksModel>("JZNoir", 1, 0, "TracksModel");
+    qmlRegisterType<SortProxyModel>("JZNoir", 1, 0, "SortProxyModel");
 
-    // Load the main QML file
-    const QUrl url(QStringLiteral("qrc:/qml/Main.qml"));
-    QObject::connect(
-        &engine, &QQmlApplicationEngine::objectCreated,
-        &app, [url](QObject *obj, const QUrl &objUrl) {
-            if (!obj && url == objUrl)
-                QCoreApplication::exit(-1);
-        },
-        Qt::QueuedConnection
-    );
+    // Create and expose instances
+    AudioEngine audioEngine;
+    LibraryScanner libraryScanner;
+    MetadataReader metadataReader;
+    QueueManager queueManager;
+    HistoryManager historyManager;
+
+    QQmlApplicationEngine engine;
+    engine.rootContext()->setContextProperty("audioEngine", &audioEngine);
+    engine.rootContext()->setContextProperty("libraryScanner", &libraryScanner);
+    engine.rootContext()->setContextProperty("metadataReader", &metadataReader);
+    engine.rootContext()->setContextProperty("queueManager", &queueManager);
+    engine.rootContext()->setContextProperty("historyManager", &historyManager);
+
+    const QUrl url(QStringLiteral("qrc:../qml/Main.qml"));
+    QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
+                     &app, [url](QObject *obj, const QUrl &objUrl) {
+        if (!obj && url == objUrl)
+            QCoreApplication::exit(-1);
+    }, Qt::QueuedConnection);
     engine.load(url);
 
     return app.exec();

@@ -2,11 +2,20 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 
 GridView {
+    id: artistGrid
     cellWidth: 200; cellHeight: 240
     model: ArtistModel {}
+    Keys.onPressed: handleNavigation(event)
+
+    function handleNavigation(event) {
+        if (NavigationManager.handleListNavigation(event, artistGrid)) {
+            event.accepted = true;
+        }
+    }
+
     delegate: Rectangle {
         width: 180; height: 220
-        color: "#2c2c2c"
+        color: color: GridView.isCurrentItem ? "#7048a0" : "#2c2c2c"
         radius: 5
 
         Column {

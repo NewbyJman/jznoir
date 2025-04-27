@@ -13,6 +13,13 @@ Rectangle {
     signal trackDoubleClicked(int index)
     signal contextMenuRequested(int index, point position)
 
+    Keys.onPressed: handleNavigation(event)
+    function handleNavigation(event) {
+        if (NavigationManager.handleListNavigation(event, listView)) {
+            event.accepted = true;
+        }
+    }
+
     ColumnLayout {
         anchors.fill: parent
         spacing: 0
