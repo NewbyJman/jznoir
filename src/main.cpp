@@ -8,6 +8,7 @@
 #include "../include/TracksModel.h"
 #include "../include/QueueManager.h"
 #include "../include/HistoryManager.h"
+#include "../include/SortProxyModel.h"
 
 int main(int argc, char *argv[])
 {

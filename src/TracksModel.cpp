@@ -1,5 +1,7 @@
 #include "../include/TracksModel.h"
 #include <QDebug>
+#include <QFileInfo>
+#include <QTime>
 
 TracksModel::TracksModel(QObject *parent) : QAbstractListModel(parent) {}
 
@@ -53,7 +55,7 @@ void TracksModel::addTrack(const Metadata &metadata) {
 
 void TracksModel::addTracks(const QList<Metadata> &tracks) {
     if (tracks.isEmpty()) return;
-    
+
     beginInsertRows(QModelIndex(), m_tracks.size(), m_tracks.size() + tracks.size() - 1);
     m_tracks.append(tracks);
     endInsertRows();
@@ -92,28 +94,4 @@ Metadata TracksModel::getTrack(int index) const {
     if (index >= 0 && index < m_tracks.size())
         return m_tracks.at(index);
     return Metadata();
-}
-
-// SortProxyModel implementation
-SortProxyModel::SortProxyModel(QObject *parent) : QSortFilterProxyModel(parent) {
-    setDynamicSortFilter(true);
-}
-
-bool SortProxyModel::lessThan(const QModelIndex &left, const QModelIndex &right) const {
-    QVariant leftData = sourceModel()->data(left, sortRole());
-    QVariant rightData = sourceModel()->data(right, sortRole());
-
-    // Handle different data types for sorting
-    switch (sortRole()) {
-    case TracksModel::DurationRole:
-        return leftData.toString().toInt() < rightData.toString().toInt();
-    case TracksModel::YearRole:
-    case TracksModel::TrackNumberRole:
-    case TracksModel::PlayCountRole:
-        return leftData.toInt() < rightData.toInt();
-    case TracksModel::LastPlayedRole:
-        return leftData.toDateTime() < rightData.toDateTime();
-    default:
-        return leftData.toString().compare(rightData.toString(), Qt::CaseInsensitive) < 0;
-    }
 }
